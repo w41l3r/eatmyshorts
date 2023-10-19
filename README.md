@@ -1,2 +1,2 @@
 # eatmyshorts
-Just another HTTP NTLM-based authentication Password Spraying Tool
+Bart Simpson's tool to password spray some HTTP NTLM-based authentication Websites
