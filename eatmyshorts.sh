@@ -3,16 +3,14 @@
 # eatmyshorts! -> ntlm-auth http spray
 #
 # w41l3r
-#
-echo ''
-echo ' ___      ___                  __        __   __  ___  __    /'
-echo '|__   /\   |      |\/| \ /    /__` |__| /  \ |__)  |  /__`  /'
-echo '|___ /~~\  |      |  |  |     .__/ |  | \__/ |  \  |  .__/ . '
-echo ''                       
+
+EMSDIR=`echo $0 |sed 's/eatmyshorts.sh//g'`
 
 URL=$1
 USERS=$2
 PASS=$3
+
+cat $EMSDIR/banner.txt
 
 if [ $# -ne 3 ];then
 	echo "Syntax: $0 {URL} {Users_file} {Password}"
@@ -64,3 +62,4 @@ echo
 echo "Adios muchacho!!"
 echo
 exit 0
+                                                            
